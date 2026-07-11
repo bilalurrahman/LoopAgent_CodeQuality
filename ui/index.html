@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quality Loop · Monitor</title>
+<style>
+:root{
+  --bg:#0b0f17; --panel:#111726; --panel2:#0e1420; --line:#1e2740;
+  --ink:#e7ecf5; --muted:#8794ad; --dim:#5b6784;
+  --accent:#39d98a; --accent2:#37c0fe; --amber:#f5a623; --red:#ff5c6c;
+  --purple:#a889ff;
+  --mono:"SFMono-Regular",ui-monospace,Consolas,"Cascadia Code",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(1200px 700px at 80% -10%,#131c2e 0%,var(--bg) 55%);
+  color:var(--ink);font-family:var(--sans);font-size:14px;overflow-x:hidden}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1500px;margin:0 auto;padding:20px 22px 60px}
+
+/* ── header ─────────────────────────────────────────── */
+header{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:10px;position:relative;
+  background:conic-gradient(from 0deg,var(--accent),var(--accent2),var(--purple),var(--accent));
+  animation:spin 6s linear infinite;filter:saturate(1.1)}
+.logo::after{content:"";position:absolute;inset:4px;border-radius:7px;background:var(--panel)}
+.logo::before{content:"↻";position:absolute;inset:0;display:grid;place-items:center;
+  font-size:18px;color:var(--accent);z-index:2;font-weight:700}
+@keyframes spin{to{transform:rotate(360deg)}}
+.brand h1{font-size:17px;margin:0;letter-spacing:.3px}
+.brand .sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.spacer{flex:1}
+.meta{display:flex;gap:22px;flex-wrap:wrap}
+.meta div{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px}
+.meta div b{display:block;font-size:13px;color:var(--ink);font-family:var(--mono);
+  text-transform:none;letter-spacing:0;margin-top:3px}
+.pill{padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;
+  font-family:var(--mono);letter-spacing:.5px;border:1px solid var(--line);
+  display:inline-flex;align-items:center;gap:8px}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.idle{color:var(--muted)}
+.pill.running{color:var(--accent2);border-color:#1c3a52;background:#0d1c2b}
+.pill.running .dot{animation:blink 1s ease-in-out infinite}
+.pill.green{color:var(--accent);border-color:#12402c;background:#0c1f16}
+.pill.escalated{color:var(--amber);border-color:#3d2f10;background:#1f1808}
+.pill.error{color:var(--red);border-color:#3d1418;background:#1f0c0e}
+@keyframes blink{50%{opacity:.25}}
+
+/* ── phase pipeline ─────────────────────────────────── */
+.pipeline{display:flex;align-items:center;gap:0;background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:18px;
+  overflow-x:auto}
+.step{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.step .node{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  border:2px solid var(--line);color:var(--dim);font-size:13px;background:var(--panel2);
+  transition:all .4s ease;position:relative}
+.step .lbl{font-size:12px;color:var(--dim);font-family:var(--mono);transition:color .4s}
+.step.done .node{border-color:var(--accent);color:var(--accent)}
+.step.done .lbl{color:var(--muted)}
+.step.active .node{border-color:var(--accent2);color:var(--accent2);
+  box-shadow:0 0 0 0 rgba(55,192,254,.5);animation:pulse 1.6s infinite}
+.step.active .lbl{color:var(--accent2)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(55,192,254,.45)}
+  70%{box-shadow:0 0 0 10px rgba(55,192,254,0)}100%{box-shadow:0 0 0 0 rgba(55,192,254,0)}}
+.connector{width:46px;height:2px;background:var(--line);margin:0 6px;flex:0 0 auto;
+  position:relative;overflow:hidden;border-radius:2px}
+.connector.filled{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+/* ── grid ───────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
+@media(max-width:1080px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.panel h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);
+  margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.panel h2 .tag{margin-left:auto;font-family:var(--mono);color:var(--dim);letter-spacing:0;
+  text-transform:none;font-size:11px}
+
+/* ── burndown / big number ──────────────────────────── */
+.burn{display:flex;gap:22px;align-items:center;margin-bottom:8px}
+.bignum{font-family:var(--mono);font-weight:700;line-height:1;letter-spacing:-1px}
+.bignum .n{font-size:64px;color:var(--ink);transition:color .3s}
+.bignum .cap{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.deltas{display:flex;gap:18px;margin-left:auto;text-align:right}
+.deltas div .v{font-family:var(--mono);font-size:22px;font-weight:700}
+.deltas div .k{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px}
+.v.base{color:var(--muted)} .v.fixed{color:var(--accent)} .v.target{color:var(--amber)}
+
+/* ratchet bar */
+.ratchet{margin-top:14px}
+.rbar{position:relative;height:26px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:8px;overflow:hidden}
+.rfill{position:absolute;left:0;top:0;bottom:0;border-radius:7px 0 0 7px;
+  background:linear-gradient(90deg,#1c5b3d,var(--accent));transition:width .8s cubic-bezier(.22,.61,.36,1)}
+.rtarget{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--amber);z-index:3}
+.rtarget::after{content:"target";position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:var(--amber);font-family:var(--mono);white-space:nowrap}
+.rlabels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;
+  color:var(--dim);margin-top:6px}
+
+/* sparkline */
+.spark{margin-top:6px}
+canvas{width:100%;height:70px;display:block}
+
+/* ── per-rule bars ──────────────────────────────────── */
+.rule{margin-bottom:9px}
+.rule .top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;
+  margin-bottom:3px}
+.rule .code{color:var(--ink)} .rule .cnt{color:var(--muted)}
+.rule .track{height:8px;background:var(--panel2);border-radius:5px;overflow:hidden}
+.rule .bar{height:100%;border-radius:5px;transition:width .7s cubic-bezier(.22,.61,.36,1);
+  background:linear-gradient(90deg,var(--accent2),var(--purple))}
+.rule.zero .bar{background:linear-gradient(90deg,#1c5b3d,var(--accent))}
+
+/* ── fix feed ───────────────────────────────────────── */
+.feed{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto}
+.card{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel2);
+  animation:slidein .45s cubic-bezier(.22,.61,.36,1)}
+@keyframes slidein{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.card .row1{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;
+  background:#12402c;color:var(--accent);border:1px solid #1c5b3d}
+.card .file{font-family:var(--mono);font-size:12px;color:var(--ink);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.card .reason{font-size:12px;color:var(--muted)}
+
+/* ── iterations ─────────────────────────────────────── */
+.iters{display:flex;gap:8px;flex-wrap:wrap}
+.iter{border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:var(--panel2);
+  font-family:var(--mono);font-size:12px;min-width:74px}
+.iter .n{color:var(--muted);font-size:10px}
+.iter .d{color:var(--accent);font-weight:700;font-size:15px}
+.iter.active{border-color:var(--accent2);box-shadow:0 0 0 1px rgba(55,192,254,.3) inset}
+
+/* ── log console ────────────────────────────────────── */
+.console{background:#080b12;border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  font-family:var(--mono);font-size:12px;line-height:1.65;max-height:260px;overflow:auto}
+.ln{display:flex;gap:10px;white-space:pre-wrap;word-break:break-word}
+.ln .t{color:var(--dim);flex:0 0 auto}
+.ln.info .m{color:#b9c4da} .ln.warn .m{color:var(--amber)} .ln.error .m{color:var(--red)}
+.ln.info .m::first-letter{}
+.footer{margin-top:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;color:var(--dim);
+  font-size:12px;font-family:var(--mono)}
+.prlink{padding:7px 14px;border:1px solid #12402c;background:#0c1f16;border-radius:9px;
+  color:var(--accent);font-weight:700}
+.conn{display:inline-flex;align-items:center;gap:7px}
+.conn .dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.conn.on .dot{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.empty{color:var(--dim);font-family:var(--mono);font-size:12px;padding:10px 0}
+.full{grid-column:1/-1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Quality Loop <span style="color:var(--dim);font-weight:400">· Monitor</span></h1>
+        <div class="sub" id="runid">no active run</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="meta">
+      <div>repo<b id="m-repo">—</b></div>
+      <div>model<b id="m-model">—</b></div>
+      <div>base<b id="m-base">—</b></div>
+      <div>step<b id="m-step">—</b></div>
+    </div>
+    <span class="pill idle" id="status"><span class="dot"></span><span id="status-t">idle</span></span>
+  </header>
+
+  <div class="pipeline" id="pipeline"></div>
+
+  <div class="grid">
+    <!-- LEFT column -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <h2>Warning burndown <span class="tag" id="burn-tag"></span></h2>
+        <div class="burn">
+          <div class="bignum">
+            <div class="n" id="cur">—</div>
+            <div class="cap">warnings now</div>
+          </div>
+          <div class="deltas">
+            <div><div class="v base" id="d-base">—</div><div class="k">baseline</div></div>
+            <div><div class="v target" id="d-target">—</div><div class="k">target</div></div>
+            <div><div class="v fixed" id="d-fixed">0</div><div class="k">fixed</div></div>
+          </div>
+        </div>
+        <div class="ratchet">
+          <div class="rbar">
+            <div class="rfill" id="rfill" style="width:100%"></div>
+            <div class="rtarget" id="rtarget" style="left:0%"></div>
+          </div>
+          <div class="rlabels"><span>0</span><span id="rlab-base">baseline</span></div>
+        </div>
+        <div class="spark"><canvas id="spark" width="700" height="70"></canvas></div>
+      </div>
+
+      <div class="panel">
+        <h2>Rules remaining <span class="tag" id="rules-tag"></span></h2>
+        <div id="rules"><div class="empty">waiting for baseline…</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Iterations</h2>
+        <div class="iters" id="iters"><div class="empty">no iterations yet</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT column -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <h2>Live fix feed <span class="tag" id="feed-tag"></span></h2>
+        <div class="feed" id="feed"><div class="empty">no fixes applied yet</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Agent log</h2>
+        <div class="console" id="console"></div>
+      </div>
+    </div>
+
+    <div class="panel full">
+      <div class="footer">
+        <span class="conn" id="conn"><span class="dot"></span><span id="conn-t">connecting…</span></span>
+        <span id="commit"></span>
+        <span class="spacer" style="flex:1"></span>
+        <span id="pr"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PHASES=[["prepare","1"],["baseline","2"],["fix-loop","3"],["gate","4"],["publish","5"],["done","✓"]];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// ── phase pipeline render ──────────────────────────────
+function buildPipeline(){
+  const el=$("pipeline");el.innerHTML="";
+  PHASES.forEach(([name,ico],i)=>{
+    const step=document.createElement("div");
+    step.className="step";step.dataset.name=name;
+    step.innerHTML=`<div class="node">${ico}</div><div class="lbl">${name}</div>`;
+    el.appendChild(step);
+    if(i<PHASES.length-1){const c=document.createElement("div");c.className="connector";el.appendChild(c);}
+  });
+}
+function setPhase(name){
+  const order=PHASES.map(p=>p[0]);const idx=order.indexOf(name);
+  document.querySelectorAll(".step").forEach((s,i)=>{
+    s.classList.remove("active","done");
+    if(i<idx)s.classList.add("done");
+    else if(i===idx)s.classList.add("active");
+  });
+  document.querySelectorAll(".connector").forEach((c,i)=>{
+    c.classList.toggle("filled",i<idx);
+  });
+}
+
+// ── number tween ───────────────────────────────────────
+const tweens={};
+function tween(el,to){
+  to=Number(to);if(isNaN(to)){el.textContent="—";return;}
+  const from=Number(String(el.textContent).replace(/\D/g,""))||0;
+  if(tweens[el.id])cancelAnimationFrame(tweens[el.id]);
+  const t0=performance.now(),dur=650;
+  function step(t){const k=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-k,3);
+    el.textContent=Math.round(from+(to-from)*e);
+    if(k<1)tweens[el.id]=requestAnimationFrame(step);}
+  tweens[el.id]=requestAnimationFrame(step);
+}
+
+// ── status pill ────────────────────────────────────────
+function setStatus(s){
+  const p=$("status");p.className="pill "+s;
+  $("status-t").textContent=({running:"running",green:"gate green",escalated:"escalated",
+    error:"error",idle:"idle"}[s]||s);
+}
+
+// ── rules bars ─────────────────────────────────────────
+let ruleBaseline={};
+function renderRules(per,baseline){
+  const host=$("rules");
+  const codes=Object.keys(baseline).length?Object.keys(baseline):Object.keys(per);
+  if(!codes.length){host.innerHTML='<div class="empty">no warnings</div>';return;}
+  const maxb=Math.max(1,...Object.values(baseline));
+  host.innerHTML="";
+  codes.sort((a,b)=>(baseline[b]||0)-(baseline[a]||0)).forEach(code=>{
+    const now=per[code]||0,base=baseline[code]||now;
+    const div=document.createElement("div");
+    div.className="rule"+(now===0?" zero":"");
+    div.innerHTML=`<div class="top"><span class="code">${code}</span>
+      <span class="cnt">${now}${base?` / ${base}`:""}</span></div>
+      <div class="track"><div class="bar" style="width:${(now/maxb*100).toFixed(1)}%"></div></div>`;
+    host.appendChild(div);
+  });
+  $("rules-tag").textContent=Object.values(per).reduce((a,b)=>a+b,0)+" left";
+}
+
+// ── fix feed ───────────────────────────────────────────
+let feedCount=0;
+function addFix(e){
+  const host=$("feed");if(feedCount===0)host.innerHTML="";
+  feedCount++;
+  const c=document.createElement("div");c.className="card";
+  const short=(e.file||"").split("/").slice(-2).join("/");
+  c.innerHTML=`<div class="row1"><span class="badge">${esc(e.code||"fix")}</span>
+    <span class="file" title="${esc(e.file)}">${esc(short)}</span></div>
+    <div class="reason">${esc(e.reason||"applied minimal fix")}</div>`;
+  host.insertBefore(c,host.firstChild);
+  while(host.children.length>40)host.removeChild(host.lastChild);
+  $("feed-tag").textContent=feedCount+" applied";
+}
+
+// ── iterations ─────────────────────────────────────────
+function renderIters(iters){
+  const host=$("iters");if(!iters||!iters.length){host.innerHTML='<div class="empty">no iterations yet</div>';return;}
+  host.innerHTML="";
+  iters.forEach((it,i)=>{
+    const d=document.createElement("div");
+    d.className="iter"+(i===iters.length-1?" active":"");
+    const delta=it.delta||0;
+    d.innerHTML=`<div class="n">iter ${it.n}</div>
+      <div class="d">${delta<0?delta:"·"}</div>
+      <div class="n">${it.count!=null?it.count+" left":""}</div>`;
+    host.appendChild(d);
+  });
+}
+
+// ── log console ────────────────────────────────────────
+function addLog(l){
+  const host=$("console");
+  const time=new Date(l.ts||Date.now()).toLocaleTimeString([], {hour12:false});
+  const ln=document.createElement("div");ln.className="ln "+(l.level||"info");
+  ln.innerHTML=`<span class="t">${time}</span><span class="m">${esc(l.msg)}</span>`;
+  host.appendChild(ln);
+  while(host.children.length>300)host.removeChild(host.firstChild);
+  host.scrollTop=host.scrollHeight;
+}
+
+// ── sparkline ──────────────────────────────────────────
+let series=[],targetLine=0,baseLine=0;
+function drawSpark(){
+  const cv=$("spark"),ctx=cv.getContext("2d");
+  const W=cv.width=cv.clientWidth*devicePixelRatio,H=cv.height=70*devicePixelRatio;
+  ctx.clearRect(0,0,W,H);
+  if(series.length<1)return;
+  const max=Math.max(baseLine,...series,1),min=0;
+  const x=i=>series.length<2?W/2:i/(series.length-1)*(W-8)+4;
+  const y=v=>H-8-(v-min)/(max-min)*(H-16);
+  // target line
+  ctx.strokeStyle="rgba(245,166,35,.5)";ctx.setLineDash([5,5]);ctx.lineWidth=devicePixelRatio;
+  ctx.beginPath();ctx.moveTo(0,y(targetLine));ctx.lineTo(W,y(targetLine));ctx.stroke();ctx.setLineDash([]);
+  // area
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,"rgba(57,217,138,.35)");grad.addColorStop(1,"rgba(57,217,138,0)");
+  ctx.beginPath();ctx.moveTo(x(0),y(series[0]));
+  series.forEach((v,i)=>ctx.lineTo(x(i),y(v)));
+  ctx.lineTo(x(series.length-1),H);ctx.lineTo(x(0),H);ctx.closePath();
+  ctx.fillStyle=grad;ctx.fill();
+  // line
+  ctx.beginPath();ctx.moveTo(x(0),y(series[0]));
+  series.forEach((v,i)=>ctx.lineTo(x(i),y(v)));
+  ctx.strokeStyle="#39d98a";ctx.lineWidth=2*devicePixelRatio;ctx.stroke();
+  // last point
+  const lx=x(series.length-1),ly=y(series[series.length-1]);
+  ctx.beginPath();ctx.arc(lx,ly,3.5*devicePixelRatio,0,7);ctx.fillStyle="#39d98a";ctx.fill();
+}
+window.addEventListener("resize",drawSpark);
+
+// ── ratchet bar ────────────────────────────────────────
+function updateRatchet(cur,base,target){
+  if(base==null)return;
+  const pct=base>0?Math.max(0,Math.min(100,cur/base*100)):0;
+  $("rfill").style.width=pct+"%";
+  const tp=base>0?target/base*100:0;
+  $("rtarget").style.left=tp+"%";
+  $("rlab-base").textContent=base;
+}
+
+// ── apply a full snapshot ──────────────────────────────
+function applySnapshot(s){
+  $("runid").textContent=s.run_id?("run "+s.run_id):"no active run";
+  $("m-repo").textContent=s.repo?s.repo.split(/[\\/]/).pop():"—";
+  $("m-model").textContent=s.model||"—";
+  $("m-base").textContent=s.base_branch||"—";
+  $("m-step").textContent=s.step!=null?s.step:"—";
+  setStatus(s.status||"idle");
+  if(s.phase)setPhase(s.phase);
+  if(s.baseline!=null){
+    baseLine=s.baseline;targetLine=s.target||0;
+    $("d-base").textContent=s.baseline;
+    $("d-target").textContent=s.target;
+    $("burn-tag").textContent="W0="+s.baseline;
+  }
+  if(s.current!=null){tween($("cur"),s.current);
+    updateRatchet(s.current,s.baseline,s.target);}
+  $("d-fixed").textContent=s.fixed||0;
+  ruleBaseline=s.per_rule_baseline||{};
+  if(s.per_rule)renderRules(s.per_rule,ruleBaseline);
+  renderIters(s.iterations);
+  feedCount=0;$("feed").innerHTML='<div class="empty">no fixes applied yet</div>';
+  (s.edits||[]).slice().reverse().forEach(addFix);
+  $("console").innerHTML="";(s.logs||[]).slice().reverse().forEach(addLog);
+  if(s.commit)$("commit").textContent="commit "+s.commit.sha;
+  if(s.pr&&s.pr.url)$("pr").innerHTML=`<a class="prlink" href="${esc(s.pr.url)}" target="_blank">PR #${esc(s.pr.number||"")} ↗</a>`;
+  series=s.current!=null?[s.baseline??s.current,s.current]:[];drawSpark();
+}
+
+// ── handle a single event ──────────────────────────────
+function handle(e){
+  switch(e.type){
+    case "snapshot": applySnapshot(e.state); break;
+    case "run_start":
+      $("runid").textContent="run "+e.run_id;
+      $("m-repo").textContent=(e.repo||"—").split(/[\\/]/).pop();
+      $("m-model").textContent=e.model;$("m-base").textContent=e.base_branch;
+      $("m-step").textContent=e.step;setStatus("running");setPhase("prepare");
+      series=[];feedCount=0;$("feed").innerHTML='<div class="empty">no fixes applied yet</div>';
+      break;
+    case "phase": setPhase(e.name); break;
+    case "baseline":
+      baseLine=e.w0;targetLine=e.target;
+      $("d-base").textContent=e.w0;$("d-target").textContent=e.target;$("burn-tag").textContent="W0="+e.w0;
+      tween($("cur"),e.w0);updateRatchet(e.w0,e.w0,e.target);
+      ruleBaseline=e.per_rule||{};renderRules(e.per_rule||{},ruleBaseline);
+      series=[e.w0];drawSpark();
+      break;
+    case "iteration_start":
+    case "iteration_end":
+      // iterations tracked via rebuild; refresh lightweight list
+      break;
+    case "select": break;
+    case "llm_call":
+      break;
+    case "edit_applied": addFix(e); break;
+    case "rebuild":
+      tween($("cur"),e.count);
+      $("d-fixed").textContent=Math.max(0,baseLine-e.count);
+      updateRatchet(e.count,baseLine,targetLine);
+      if(e.per_rule)renderRules(e.per_rule,ruleBaseline);
+      series.push(e.count);if(series.length>120)series.shift();drawSpark();
+      break;
+    case "gate":
+      if(e.green)setStatus("green");
+      break;
+    case "commit": $("commit").textContent="commit "+e.sha+" · "+(e.message||""); break;
+    case "pr": $("pr").innerHTML=`<a class="prlink" href="${esc(e.url)}" target="_blank">PR #${esc(e.number||"")} ↗</a>`; break;
+    case "run_end":
+      setStatus(e.status);$("d-fixed").textContent=e.fixed;
+      break;
+    case "log": addLog(e); break;
+  }
+  // keep iterations panel fresh from periodic snapshot fetches
+}
+
+// ── connect ────────────────────────────────────────────
+buildPipeline();
+function connect(){
+  const es=new EventSource("/events");
+  es.onopen=()=>{$("conn").classList.add("on");$("conn-t").textContent="live";};
+  es.onerror=()=>{$("conn").classList.remove("on");$("conn-t").textContent="reconnecting…";};
+  es.onmessage=ev=>{try{handle(JSON.parse(ev.data));}catch(err){console.error(err,ev.data);}};
+}
+// periodic snapshot to keep iterations list in sync (cheap)
+async function pollIters(){
+  try{const r=await fetch("/api/state");const s=await r.json();renderIters(s.iterations);}catch(e){}
+  setTimeout(pollIters,1500);
+}
+connect();pollIters();
+</script>
+</body>
+</html>

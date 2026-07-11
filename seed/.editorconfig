@@ -1,0 +1,33 @@
+root = true
+
+# ── Quality ratchet rule set ─────────────────────────────────────────────
+# Start focused: high-value, mechanically-fixable correctness / performance /
+# reliability / globalization rules only. Formatting & var-style noise is
+# silenced for the initial baseline and can be widened later (see README
+# rollout guidance). Verified baseline on HattanHealthTracker: ~107 warnings.
+
+[*.cs]
+# Default: analyzers off, then opt-in the families we want the loop to fix.
+dotnet_analyzer_diagnostic.severity = none
+
+# Roslyn code-quality (CA*) — correctness / performance / reliability / security.
+dotnet_analyzer_diagnostic.category-Performance.severity  = warning
+dotnet_analyzer_diagnostic.category-Reliability.severity   = warning
+dotnet_analyzer_diagnostic.category-Security.severity      = warning
+dotnet_analyzer_diagnostic.category-Usage.severity         = warning
+dotnet_analyzer_diagnostic.category-Globalization.severity = warning
+
+# Useful code-style rules (cleanliness / dead code), no formatting churn.
+dotnet_diagnostic.IDE0005.severity = warning   # unnecessary using directives
+dotnet_diagnostic.IDE0051.severity = warning   # unused private member
+dotnet_diagnostic.IDE0052.severity = warning   # unread private member
+dotnet_diagnostic.IDE0044.severity = warning   # make field readonly
+dotnet_diagnostic.IDE0060.severity = warning   # unused parameter
+
+# Naming rule CA1707 (underscores in member names) is noisy/subjective here.
+dotnet_diagnostic.CA1707.severity = none
+
+# ── Never touch generated / EF migration code ────────────────────────────
+[**/Migrations/**.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none

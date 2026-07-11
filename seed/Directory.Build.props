@@ -1,0 +1,14 @@
+<Project>
+  <!--
+    Seeded by the quality-ratchet loop onto the target repo's `quality` branch.
+    Applies to every project under this folder. Analyzers emit WARNINGS (not
+    errors) so the build still succeeds and the gate can count them.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+</Project>

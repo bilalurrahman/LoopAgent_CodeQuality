@@ -1,0 +1,751 @@
+[
+ {
+  "file": "backend/HattanHealthTracker.Core/Entities/Appointment.cs",
+  "line": 13,
+  "col": 46,
+  "code": "CA1805",
+  "message": "Member 'IsPast' is explicitly initialized to its default value (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1805)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Core/Entities/Document.cs",
+  "line": 36,
+  "col": 49,
+  "code": "CA1805",
+  "message": "Member 'IsProcessed' is explicitly initialized to its default value (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1805)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Core/Entities/Document.cs",
+  "line": 37,
+  "col": 49,
+  "code": "CA1805",
+  "message": "Member 'IsVerified' is explicitly initialized to its default value (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1805)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Core/Models/ApiResponse.cs",
+  "line": 9,
+  "col": 34,
+  "code": "CA1000",
+  "message": "Do not declare static members on generic types (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1000)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Core/Models/ApiResponse.cs",
+  "line": 10,
+  "col": 34,
+  "code": "CA1000",
+  "message": "Do not declare static members on generic types (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1000)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Core/Parsers/FolderDateParser.cs",
+  "line": 28,
+  "col": 23,
+  "code": "SYSLIB1045",
+  "message": "Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time. (https://learn.microsoft.com/dotnet/fundamentals/syslib-diagnostics/syslib1045)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 20,
+  "col": 26,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 20,
+  "col": 17,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'AiService.AskAsync(string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AppointmentService.cs",
+  "line": 34,
+  "col": 29,
+  "code": "CA1305",
+  "message": "The behavior of 'int.ToString()' could vary based on the current user's locale settings. Replace this call in 'AppointmentService.MapToResponse(Appointment)' with a call to 'int.ToString(IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AppointmentService.cs",
+  "line": 35,
+  "col": 29,
+  "code": "CA1305",
+  "message": "The behavior of 'DateTime.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'AppointmentService.MapToResponse(Appointment)' with a call to 'DateTime.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AppointmentService.cs",
+  "line": 36,
+  "col": 29,
+  "code": "CA1305",
+  "message": "The behavior of 'DateTime.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'AppointmentService.MapToResponse(Appointment)' with a call to 'DateTime.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AppointmentService.cs",
+  "line": 46,
+  "col": 19,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MedicationService.cs",
+  "line": 41,
+  "col": 17,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AppointmentService.cs",
+  "line": 46,
+  "col": 9,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'AppointmentService.GetTagColor(string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MedicationService.cs",
+  "line": 41,
+  "col": 9,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'MedicationService.GetColor(string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 64,
+  "col": 33,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 65,
+  "col": 30,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 64,
+  "col": 32,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'VisitService.DeriveEventType(VisitEvent)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 65,
+  "col": 29,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'VisitService.DeriveEventType(VisitEvent)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/UltrasoundService.cs",
+  "line": 98,
+  "col": 35,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'UltrasoundService.MapToResponse(UltrasoundMeta, string)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/UltrasoundService.cs",
+  "line": 99,
+  "col": 35,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'UltrasoundService.MapToResponse(UltrasoundMeta, string)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 84,
+  "col": 33,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 85,
+  "col": 30,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 84,
+  "col": 32,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'VisitService.DeriveTitle(VisitEvent)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 85,
+  "col": 29,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'VisitService.DeriveTitle(VisitEvent)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/DocumentService.cs",
+  "line": 132,
+  "col": 47,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'DocumentService.MapToResponse(Document)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/VisitService.cs",
+  "line": 46,
+  "col": 29,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'VisitService.MapToResponse(VisitEvent)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 68,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 74,
+  "col": 16,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/LabService.cs",
+  "line": 98,
+  "col": 14,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/LabService.cs",
+  "line": 98,
+  "col": 9,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'LabService.GetMeta(string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/LabService.cs",
+  "line": 47,
+  "col": 28,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/LabService.cs",
+  "line": 47,
+  "col": 23,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'LabService.GetTrendAsync(string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/LabService.cs",
+  "line": 65,
+  "col": 21,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'LabService.GetTrendAsync(string)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/UltrasoundService.cs",
+  "line": 160,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 39,
+  "col": 28,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 39,
+  "col": 22,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'MetricsService.GetTrendAsync(string, string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 75,
+  "col": 21,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'MetricsService.GetTrendAsync(string, string)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 146,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 182,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 216,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/DoctorService.cs",
+  "line": 20,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 104,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/LabService.cs",
+  "line": 28,
+  "col": 33,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'LabService.GetAllGroupedAsync()' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 259,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 298,
+  "col": 21,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'MetricsService.BuildPVRTrend(DateOnly, string)' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 335,
+  "col": 14,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/MetricsService.cs",
+  "line": 335,
+  "col": 9,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'MetricsService.GetTestMeta(string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 175,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 180,
+  "col": 31,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'AiService.GetUltrasoundSummaryAsync()' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Infrastructure/Services/AiService.cs",
+  "line": 193,
+  "col": 14,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 48,
+  "col": 9,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 34,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogWarning(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 48,
+  "col": 9,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 73,
+  "col": 13,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 97,
+  "col": 13,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/SmartTextExtractor.cs",
+  "line": 49,
+  "col": 26,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 22,
+  "col": 35,
+  "code": "CA1305",
+  "message": "The behavior of 'double.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'OllamaExtractionService.Temperature.get' with a call to 'double.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 58,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogError(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 73,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 97,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 112,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogError(ILogger, Exception?, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/AzureOcrService.cs",
+  "line": 89,
+  "col": 17,
+  "code": "CA1305",
+  "message": "The behavior of 'StringBuilder.AppendLine(ref StringBuilder.AppendInterpolatedStringHandler)' could vary based on the current user's locale settings. Replace this call in 'AzureOcrService.ExtractAsync(byte[], string)' with a call to 'StringBuilder.AppendLine(IFormatProvider, ref StringBuilder.AppendInterpolatedStringHandler)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/SmartTextExtractor.cs",
+  "line": 44,
+  "col": 9,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 24,
+  "col": 35,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'OllamaExtractionService.NumCtx.get' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 26,
+  "col": 35,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'OllamaExtractionService.NumPredict.get' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/SmartTextExtractor.cs",
+  "line": 44,
+  "col": 9,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/SmartTextExtractor.cs",
+  "line": 49,
+  "col": 17,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToLower()' could vary based on the current user's locale settings. Replace this call in 'SmartTextExtractor.ExtractAsync(byte[], string)' with a call to 'string.ToLower(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 187,
+  "col": 51,
+  "code": "CA1311",
+  "message": "Specify a culture or use an invariant version to avoid implicit dependency on current culture (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1311)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/SmartTextExtractor.cs",
+  "line": 39,
+  "col": 25,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'SmartTextExtractor.ExtractAsync(byte[], string)' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/SmartTextExtractor.cs",
+  "line": 41,
+  "col": 25,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'SmartTextExtractor.ExtractAsync(byte[], string)' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 187,
+  "col": 40,
+  "code": "CA1304",
+  "message": "The behavior of 'string.ToUpper()' could vary based on the current user's locale settings. Replace this call in 'OllamaExtractionService.DetectReportTypeFromValues(List<ExtractedLabValue>)' with a call to 'string.ToUpper(CultureInfo)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1304)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 73,
+  "col": 9,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 99,
+  "col": 9,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 91,
+  "col": 13,
+  "code": "CA1869",
+  "message": "Avoid creating a new 'JsonSerializerOptions' instance for every serialization operation. Cache and reuse instances instead. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1869)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 38,
+  "col": 23,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'OllamaExtractionService.OllamaExtractionService(HttpClient, IConfiguration, ILogger<OllamaExtractionService>)' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 73,
+  "col": 9,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 99,
+  "col": 9,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 135,
+  "col": 17,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 164,
+  "col": 17,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 128,
+  "col": 17,
+  "code": "CA1869",
+  "message": "Avoid creating a new 'JsonSerializerOptions' instance for every serialization operation. Cache and reuse instances instead. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1869)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 159,
+  "col": 25,
+  "code": "CA1869",
+  "message": "Avoid creating a new 'JsonSerializerOptions' instance for every serialization operation. Cache and reuse instances instead. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1869)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 133,
+  "col": 42,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 135,
+  "col": 17,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 164,
+  "col": 17,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 176,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogError(ILogger, Exception?, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 191,
+  "col": 18,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 84,
+  "col": 30,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in 'LabOrchestrationService.GetUnprocessedAsync()' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 120,
+  "col": 28,
+  "code": "CA1305",
+  "message": "The behavior of 'DateOnly.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'LabOrchestrationService.GetUnprocessedAsync()' with a call to 'DateOnly.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/PdfPigTextExtractor.cs",
+  "line": 54,
+  "col": 13,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 269,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogError(ILogger, Exception?, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/ExtractionValidator.cs",
+  "line": 129,
+  "col": 13,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/ExtractionValidator.cs",
+  "line": 131,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogWarning(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/PdfPigTextExtractor.cs",
+  "line": 54,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/PdfPigTextExtractor.cs",
+  "line": 69,
+  "col": 13,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogError(ILogger, Exception?, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/PdfPigTextExtractor.cs",
+  "line": 29,
+  "col": 17,
+  "code": "CA1305",
+  "message": "The behavior of 'StringBuilder.AppendLine(ref StringBuilder.AppendInterpolatedStringHandler)' could vary based on the current user's locale settings. Replace this call in 'PdfPigTextExtractor.Extract(byte[], string)' with a call to 'StringBuilder.AppendLine(IFormatProvider, ref StringBuilder.AppendInterpolatedStringHandler)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 332,
+  "col": 17,
+  "code": "CA1873",
+  "message": "Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 332,
+  "col": 17,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogDebug(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 214,
+  "col": 20,
+  "code": "CA1822",
+  "message": "Member 'BuildPrompt' does not access instance data and can be marked as static (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/OllamaExtractionService.cs",
+  "line": 184,
+  "col": 20,
+  "code": "CA1822",
+  "message": "Member 'DetectReportTypeFromValues' does not access instance data and can be marked as static (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 378,
+  "col": 19,
+  "code": "CA1305",
+  "message": "The behavior of 'decimal.ToString(string)' could vary based on the current user's locale settings. Replace this call in 'LabOrchestrationService.PrintExtractionTable(List<ExtractedLabValue>)' with a call to 'decimal.ToString(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 439,
+  "col": 35,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Services/LabOrchestrationService.cs",
+  "line": 365,
+  "col": 18,
+  "code": "CA1822",
+  "message": "Member 'PrintExtractionTable' does not access instance data and can be marked as static (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1822)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Program.cs",
+  "line": 109,
+  "col": 6,
+  "code": "CA1860",
+  "message": "Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1860)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Extractor/Program.cs",
+  "line": 141,
+  "col": 15,
+  "code": "CA1305",
+  "message": "The behavior of 'int.Parse(string)' could vary based on the current user's locale settings. Replace this call in '<top-level-statements-entry-point>' with a call to 'int.Parse(string, IFormatProvider)'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1305)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Api/Controllers/ImportController.cs",
+  "line": 61,
+  "col": 17,
+  "code": "CA1869",
+  "message": "Avoid creating a new 'JsonSerializerOptions' instance for every serialization operation. Cache and reuse instances instead. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1869)"
+ },
+ {
+  "file": "backend/HattanHealthTracker.Api/Services/ImportService.cs",
+  "line": 146,
+  "col": 21,
+  "code": "CA1848",
+  "message": "For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogError(ILogger, Exception?, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)"
+ }
+]

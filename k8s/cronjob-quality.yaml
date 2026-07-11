@@ -1,0 +1,70 @@
+# Separate CronJob for the quality-ratchet loop (leave any existing build-guard
+# glm-loop CronJob untouched). Runs a few times a week to avoid PR overload.
+#
+# Prereqs: image built as glm-loop-quality:latest (see build), and a Secret
+# `glm-loop-git` with key GH_TOKEN (a fine-grained PAT with repo + PR scope).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: glm-loop-quality
+  labels: { app: glm-loop-quality }
+spec:
+  # Mon/Wed/Fri 12:00 Asia/Riyadh.
+  schedule: "0 12 * * 1,3,5"
+  timeZone: "Asia/Riyadh"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 3600
+      template:
+        metadata:
+          labels: { app: glm-loop-quality }
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: loop
+              image: glm-loop-quality:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: REPO_URL
+                  value: "https://github.com/bilalurrahman/HattanMedicalHistory.git"
+                - name: GIT_BRANCH
+                  value: "quality"
+                - name: LOOP_PR_BASE
+                  value: "quality"
+                - name: LOOP_BRANCH_PREFIX
+                  value: "glm_quality"
+                - name: LOOP_SLN
+                  value: "backend/HattanHealthTracker.sln"
+                - name: WARN_STEP
+                  value: "10"
+                - name: MAX_ITERS
+                  value: "5"
+                - name: LOOP_MODEL
+                  value: "glm-5.2:cloud"
+                - name: OLLAMA_HOST
+                  value: "http://host.docker.internal:11434"
+                - name: GH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: glm-loop-git
+                      key: GH_TOKEN
+              ports:
+                - containerPort: 8787
+              resources:
+                requests: { cpu: "500m", memory: "1Gi" }
+                limits:   { cpu: "2",    memory: "3Gi" }
+---
+# Optional: expose the live dashboard of the currently-running job.
+apiVersion: v1
+kind: Service
+metadata:
+  name: glm-loop-quality-ui
+spec:
+  selector: { app: glm-loop-quality }
+  ports:
+    - port: 8787
+      targetPort: 8787

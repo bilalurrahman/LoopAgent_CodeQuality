@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/Projects/AI -maxdepth 4 -type f \\\\\\( -name \"Dockerfile-A*\" -o -name \"entrypoint-A*\" -o -name \"loop-A*\" -o -name \"cronjob-hattan*\" -o -name \"build-A*\" \\\\\\) 2>/dev/null | head -30)"
+    ]
+  }
+}
