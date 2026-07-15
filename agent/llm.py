@@ -42,6 +42,16 @@ Common fixes:
   for `!.Any()`), choosing the member that exists on the type.
 - CA1822: add `static` to an instance method that doesn't use instance state.
 - CA1805: remove redundant initialization to default(T).
+- CA1050 (declare types in namespaces): when several top-level type
+  declarations sit at the end of a file that ALSO has top-level statements,
+  wrap ALL of them in a single block-scoped namespace and add a matching
+  `using` so the top-level code still resolves the types. That is THREE
+  coordinated edits and they must all land together:
+    1) after the existing `using` lines, insert `using <Ns>;`
+    2) before the FIRST top-level type, insert `namespace <Ns>\n{`
+    3) at the very end of the file, append `\n}`
+  Use a sensible namespace like the assembly/folder name. If you cannot make
+  all three edits safely, SKIP this warning.
 - CA1848/CA1873: leave for a human if the fix is non-trivial (SKIP).
 
 Respond with STRICT JSON only, no prose, in this shape:

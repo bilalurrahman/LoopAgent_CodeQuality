@@ -9,6 +9,7 @@ Python loop and the shell gate always agree.
 from __future__ import annotations
 
 import collections
+import os
 import re
 import subprocess
 from dataclasses import dataclass, asdict
@@ -47,13 +48,25 @@ class BuildResult:
         return [asdict(w) for w in self.warnings]
 
 
-def _normalise_path(p: str) -> str:
+def _normalise_path(p: str, repo_root: str | None = None) -> str:
     p = p.replace("\\", "/")
-    idx = p.find("backend/")
-    return p[idx:] if idx >= 0 else p
+    if repo_root:
+        rr = repo_root.replace("\\", "/")
+        try:
+            rel = os.path.relpath(p, rr).replace("\\", "/")
+            if not rel.startswith(".."):
+                return rel
+        except ValueError:
+            pass  # e.g. different drive on Windows
+    # Fallback for absolute paths when repo_root is unknown.
+    for anchor in ("backend/", "server/", "src/"):
+        idx = p.find(anchor)
+        if idx >= 0:
+            return p[idx:]
+    return p
 
 
-def parse_warnings(text: str) -> BuildResult:
+def parse_warnings(text: str, repo_root: str | None = None) -> BuildResult:
     seen: "collections.OrderedDict[tuple, Warning]" = collections.OrderedDict()
     errors: list[str] = []
     for line in text.splitlines():
@@ -63,7 +76,7 @@ def parse_warnings(text: str) -> BuildResult:
         if not m:
             continue
         f, ln, col, code, msg = m.groups()
-        w = Warning(_normalise_path(f), int(ln), int(col), code, msg.strip())
+        w = Warning(_normalise_path(f, repo_root), int(ln), int(col), code, msg.strip())
         seen.setdefault(w.key(), w)
     warnings = list(seen.values())
     per_rule = dict(
@@ -81,4 +94,4 @@ def build_and_parse(sln: str, cwd: str, incremental: bool = True) -> BuildResult
         args, cwd=cwd, capture_output=True, text=True, encoding="utf-8", errors="ignore"
     )
     out = (proc.stdout or "") + "\n" + (proc.stderr or "")
-    return parse_warnings(out)
+    return parse_warnings(out, repo_root=cwd)

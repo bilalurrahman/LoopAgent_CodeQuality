@@ -63,7 +63,9 @@ def run_real(cfg, bus: EventBus):
 
     # ── prepare ───────────────────────────────────────────────────────────
     bus.emit("phase", name="prepare")
-    _ensure_seed_files(repo, bus)
+    # Source dir = the folder containing the .sln/.csproj (e.g. backend/ or server/).
+    src_dir = os.path.dirname(sln) or "."
+    _ensure_seed_files(repo, bus, src_dir)
     gitops.ensure_branch(repo, work_branch)
     bus.log(f"working on branch {work_branch}")
 
@@ -313,10 +315,10 @@ def _select_batch(warnings, max_files):
     return by_file
 
 
-def _ensure_seed_files(repo, bus):
+def _ensure_seed_files(repo, bus, src_dir="backend"):
     pairs = [
-        (os.path.join(ROOT, "seed", "Directory.Build.props"), os.path.join(repo, "backend", "Directory.Build.props")),
-        (os.path.join(ROOT, "seed", ".editorconfig"), os.path.join(repo, "backend", ".editorconfig")),
+        (os.path.join(ROOT, "seed", "Directory.Build.props"), os.path.join(repo, src_dir, "Directory.Build.props")),
+        (os.path.join(ROOT, "seed", ".editorconfig"), os.path.join(repo, src_dir, ".editorconfig")),
         (os.path.join(ROOT, "seed", ".glm-loop", "gate.sh"), os.path.join(repo, ".glm-loop", "gate.sh")),
     ]
     for src, dst in pairs:
