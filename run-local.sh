@@ -10,9 +10,10 @@ export PYTHONIOENCODING=utf-8
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENT="$DIR/agent/loop_agent.py"
 
-MODE_REAL=0; REPO="${REPO_PATH:-}"; OPENPR=""; STEP="${WARN_STEP:-10}"
+MODE_REAL=0; DAEMON=0; REPO="${REPO_PATH:-}"; OPENPR=""; STEP="${WARN_STEP:-10}"
 SIMRUNS=8; SPEED=2; PORT="${UI_PORT:-8787}"; MODEL="${LOOP_MODEL:-glm-5.2:cloud}"
 while [ $# -gt 0 ]; do case "$1" in
+  --daemon) DAEMON=1;;
   --real) MODE_REAL=1;;
   --repo) REPO="$2"; shift;;
   --open-pr) OPENPR="--open-pr";;
@@ -24,7 +25,9 @@ while [ $# -gt 0 ]; do case "$1" in
   *) echo "unknown arg: $1" >&2; exit 2;;
 esac; shift; done
 
-if [ "$MODE_REAL" = "1" ]; then
+if [ "$DAEMON" = "1" ]; then
+  exec python "$AGENT" --daemon --port "$PORT"
+elif [ "$MODE_REAL" = "1" ]; then
   [ -n "$REPO" ] || { echo "--real requires --repo <path>"; exit 2; }
   exec python "$AGENT" --repo "$REPO" --step "$STEP" --model "$MODEL" --port "$PORT" --keep-alive $OPENPR
 else

@@ -151,6 +151,45 @@ canvas{width:100%;height:70px;display:block}
 .conn.on .dot{background:var(--accent);box-shadow:0 0 8px var(--accent)}
 .empty{color:var(--dim);font-family:var(--mono);font-size:12px;padding:10px 0}
 .full{grid-column:1/-1}
+
+/* ── control panel ──────────────────────────────────── */
+.control{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:14px 18px;margin-bottom:18px}
+.control h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);
+  margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.control h2 .badge2{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--dim);
+  text-transform:none;letter-spacing:0}
+.ctrls{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.7px}
+select,input[type=number],input[type=time]{background:var(--panel2);color:var(--ink);
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:var(--mono);
+  font-size:12px;outline:none;min-height:36px}
+select:focus,input:focus{border-color:var(--accent2)}
+.chk{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);height:36px}
+.chk input{width:15px;height:15px;accent-color:var(--accent)}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#04120b;font-weight:700;
+  font-size:13px;padding:9px 18px;border-radius:9px;cursor:pointer;font-family:var(--sans);
+  min-height:36px;transition:filter .15s,opacity .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;color:var(--accent2);border-color:var(--accent2)}
+.btn.amber{background:transparent;color:var(--amber);border-color:var(--amber)}
+.divider{width:1px;align-self:stretch;background:var(--line);margin:0 4px}
+.sched-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.sched{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;background:var(--panel2);font-size:12px;flex-wrap:wrap}
+.sched .desc{font-family:var(--mono);color:var(--ink)}
+.sched .when{color:var(--muted);font-family:var(--mono);font-size:11px}
+.sched .sp{flex:1}
+.sched .x{cursor:pointer;color:var(--red);font-weight:700;border:1px solid var(--line);
+  border-radius:7px;padding:3px 9px;background:transparent}
+.sched .tog{cursor:pointer;font-family:var(--mono);font-size:11px;border:1px solid var(--line);
+  border-radius:7px;padding:3px 9px;background:transparent;color:var(--muted)}
+.sched.off{opacity:.5}
+.toast{font-size:12px;font-family:var(--mono);color:var(--muted);margin-left:6px}
+.toast.err{color:var(--red)} .toast.ok{color:var(--accent)}
+@media(max-width:720px){.divider{display:none}}
 </style>
 </head>
 <body>
@@ -172,6 +211,50 @@ canvas{width:100%;height:70px;display:block}
     </div>
     <span class="pill idle" id="status"><span class="dot"></span><span id="status-t">idle</span></span>
   </header>
+
+  <div class="control" id="control" hidden>
+    <h2>Control <span class="badge2" id="ctrl-hint">pick a repo, then run or schedule</span></h2>
+    <div class="ctrls">
+      <div class="field">
+        <label>Repository</label>
+        <select id="c-repo"></select>
+      </div>
+      <div class="field">
+        <label>Mode</label>
+        <select id="c-mode">
+          <option value="real">Real (fix &amp; PR)</option>
+          <option value="simulate">Simulate (demo)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Step</label>
+        <input type="number" id="c-step" value="10" min="1" max="500" style="width:70px">
+      </div>
+      <label class="chk"><input type="checkbox" id="c-pr" checked> open PR</label>
+      <button class="btn" id="c-run">▶ Run now</button>
+      <span class="toast" id="c-toast"></span>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>Schedule</label>
+        <select id="s-type">
+          <option value="interval">Every N minutes</option>
+          <option value="daily">Daily at time</option>
+        </select>
+      </div>
+      <div class="field" id="s-min-wrap">
+        <label>Minutes</label>
+        <input type="number" id="s-min" value="60" min="1" max="10080" style="width:80px">
+      </div>
+      <div class="field" id="s-at-wrap" hidden>
+        <label>At (local)</label>
+        <input type="time" id="s-at" value="12:00">
+      </div>
+      <button class="btn ghost" id="s-add">＋ Schedule</button>
+    </div>
+    <div class="sched-list" id="sched-list"></div>
+  </div>
 
   <div class="pipeline" id="pipeline"></div>
 
@@ -418,7 +501,14 @@ function applySnapshot(s){
 function handle(e){
   switch(e.type){
     case "snapshot": applySnapshot(e.state); break;
+    case "reset":
+      series=[];feedCount=0;$("feed").innerHTML='<div class="empty">no fixes applied yet</div>';
+      $("console").innerHTML="";$("rules").innerHTML='<div class="empty">waiting for baseline…</div>';
+      $("iters").innerHTML='<div class="empty">no iterations yet</div>';
+      $("commit").textContent="";$("pr").innerHTML="";drawSpark();
+      break;
     case "run_start":
+      isRunning=true;updateRunBtn();
       $("runid").textContent="run "+e.run_id;
       $("m-repo").textContent=(e.repo||"—").split(/[\\/]/).pop();
       $("m-model").textContent=e.model;$("m-base").textContent=e.base_branch;
@@ -455,11 +545,90 @@ function handle(e){
     case "pr": $("pr").innerHTML=`<a class="prlink" href="${esc(e.url)}" target="_blank">PR #${esc(e.number||"")} ↗</a>`; break;
     case "run_end":
       setStatus(e.status);$("d-fixed").textContent=e.fixed;
+      isRunning=false;updateRunBtn();loadConfig();
       break;
     case "log": addLog(e); break;
   }
   // keep iterations panel fresh from periodic snapshot fetches
 }
+
+// ── control panel ──────────────────────────────────────
+let controlEnabled=false, isRunning=false;
+function toast(msg,kind){const t=$("c-toast");t.textContent=msg;t.className="toast "+(kind||"");
+  if(msg)setTimeout(()=>{if(t.textContent===msg){t.textContent="";t.className="toast";}},4000);}
+
+async function loadConfig(){
+  try{
+    const r=await fetch("/api/config");const c=await r.json();
+    controlEnabled=!!c.control;
+    $("control").hidden=!controlEnabled;
+    if(!controlEnabled)return;
+    // repos dropdown (preserve selection)
+    const sel=$("c-repo");const prev=sel.value;
+    sel.innerHTML="";
+    (c.repos||[]).forEach(rp=>{const o=document.createElement("option");
+      o.value=rp.key;o.textContent=rp.name+"  ("+rp.base_branch+")";sel.appendChild(o);});
+    if(prev)sel.value=prev;
+    isRunning=!!c.running;
+    updateRunBtn();
+    renderSchedules(c.schedules||[],c.repos||[]);
+  }catch(e){/* server not in daemon mode */}
+}
+function updateRunBtn(){
+  const b=$("c-run");b.disabled=isRunning;
+  b.textContent=isRunning?"● running…":"▶ Run now";
+}
+function repoName(key,repos){const r=(repos||[]).find(x=>x.key===key);return r?r.name:key;}
+function renderSchedules(list,repos){
+  const host=$("sched-list");
+  if(!list.length){host.innerHTML="";return;}
+  host.innerHTML="";
+  list.forEach(s=>{
+    const when=s.type==="interval"?("every "+s.every_minutes+" min")
+      :("daily "+s.at);
+    const next=s.next_run?new Date(s.next_run*1000).toLocaleString([], {hour12:false}):"—";
+    const div=document.createElement("div");
+    div.className="sched"+(s.enabled?"":" off");
+    div.innerHTML=`<span class="desc">${esc(repoName(s.repo_key,repos))}</span>
+      <span class="when">· ${esc(s.mode)}${s.open_pr?" · PR":""} · ${esc(when)} · next ${esc(next)}</span>
+      <span class="sp"></span>
+      <button class="tog" data-id="${s.id}" data-en="${s.enabled?0:1}">${s.enabled?"pause":"resume"}</button>
+      <button class="x" data-id="${s.id}">✕</button>`;
+    host.appendChild(div);
+  });
+  host.querySelectorAll(".x").forEach(b=>b.onclick=()=>delSchedule(b.dataset.id));
+  host.querySelectorAll(".tog").forEach(b=>b.onclick=()=>togSchedule(b.dataset.id,b.dataset.en==="1"));
+}
+async function runNow(){
+  const body={repo_key:$("c-repo").value,mode:$("c-mode").value,
+    open_pr:$("c-pr").checked,step:parseInt($("c-step").value)||10};
+  toast("starting…");
+  const r=await fetch("/api/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const j=await r.json();
+  if(j.ok){isRunning=true;updateRunBtn();toast("run "+j.run_id+" started","ok");}
+  else toast(j.error||"failed","err");
+}
+async function addSchedule(){
+  const type=$("s-type").value;
+  const body={repo_key:$("c-repo").value,mode:$("c-mode").value,open_pr:$("c-pr").checked,
+    step:parseInt($("c-step").value)||10,type,
+    every_minutes:parseInt($("s-min").value)||60,at:$("s-at").value||"12:00"};
+  const r=await fetch("/api/schedule",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const j=await r.json();
+  if(j.ok){toast("scheduled","ok");loadConfig();}else toast("failed","err");
+}
+async function delSchedule(id){
+  await fetch("/api/schedule/"+id,{method:"DELETE"});loadConfig();
+}
+async function togSchedule(id,en){
+  await fetch("/api/schedule/toggle",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({id,enabled:en})});loadConfig();
+}
+$("c-run").onclick=runNow;
+$("s-add").onclick=addSchedule;
+$("s-type").onchange=e=>{const d=e.target.value==="daily";
+  $("s-at-wrap").hidden=!d;$("s-min-wrap").hidden=d;};
+$("c-mode").onchange=e=>{$("c-pr").parentElement.style.opacity=e.target.value==="real"?"1":".4";};
 
 // ── connect ────────────────────────────────────────────
 buildPipeline();
@@ -474,7 +643,7 @@ async function pollIters(){
   try{const r=await fetch("/api/state");const s=await r.json();renderIters(s.iterations);}catch(e){}
   setTimeout(pollIters,1500);
 }
-connect();pollIters();
+connect();pollIters();loadConfig();setInterval(loadConfig,4000);
 </script>
 </body>
 </html>

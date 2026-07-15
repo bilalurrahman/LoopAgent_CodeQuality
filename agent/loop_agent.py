@@ -211,8 +211,8 @@ def run_simulate(cfg, bus: EventBus, base_count=None, warnings_list=None):
     def per_rule(ws):
         return dict(sorted(collections.Counter(w["code"] for w in ws).items(), key=lambda kv: -kv[1]))
 
-    bus.emit("run_start", run_id=run_id, repo=cfg["repo"], model=cfg["model"] + " (sim)",
-             base_branch=cfg["base_branch"], step=step)
+    bus.emit("run_start", run_id=run_id, repo=cfg.get("repo") or cfg.get("repo_name"),
+             model=cfg["model"] + " (sim)", base_branch=cfg["base_branch"], step=step)
     bus.emit("phase", name="prepare")
     bus.log("cloning base branch…"); sleep(0.6)
     bus.log("ensuring seed files (.editorconfig, Directory.Build.props)…"); sleep(0.5)
@@ -385,6 +385,8 @@ def main():
     ap.add_argument("--simulate", action="store_true", help="drive the UI from captured warnings, no LLM/git")
     ap.add_argument("--sim-runs", type=int, default=1, help="simulate N sequential ratchet runs")
     ap.add_argument("--speed", type=float, help="simulate speed multiplier (higher=faster)")
+    ap.add_argument("--daemon", action="store_true",
+                    help="serve the dashboard + scheduler and wait for runs triggered from the UI")
     ap.add_argument("--no-serve", action="store_true", help="do not start the dashboard server")
     ap.add_argument("--port", type=int, default=int(env("UI_PORT", "8787")))
     ap.add_argument("--host", default=env("UI_HOST", "127.0.0.1"))
@@ -399,6 +401,23 @@ def main():
     cfg = build_config(args)
     run_dir = os.path.join(ROOT, "runs", cfg["run_id"])
     bus = EventBus(jsonl_path=os.path.join(run_dir, "events.jsonl"))
+
+    # ── daemon: serve dashboard + scheduler, wait for UI-triggered runs ────
+    if args.daemon:
+        import control
+        controller = control.Controller(bus)
+        srv.start_server(bus, args.host, args.port, controller=controller)
+        print("\n  +-- Quality-Loop control panel -----------------------------")
+        print(f"  |   open  http://{args.host}:{args.port}")
+        print(f"  |   repos: {len(controller.repos)}   schedules: {len(controller.schedules)}")
+        print("  |   pick a repo, then Run now or Schedule.")
+        print("  +-----------------------------------------------------------\n")
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            pass
+        return
 
     httpd = None
     if not args.no_serve:

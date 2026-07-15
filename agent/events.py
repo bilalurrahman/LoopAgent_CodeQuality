@@ -26,6 +26,33 @@ def now_ms() -> int:
     return int(time.time() * 1000)
 
 
+def _initial_state() -> dict:
+    return {
+        "run_id": None,
+        "status": "idle",           # idle | running | green | escalated | error
+        "repo": None,
+        "model": None,
+        "base_branch": None,
+        "step": None,
+        "phase": None,              # prepare | baseline | fix-loop | gate | publish | done
+        "baseline": None,           # W0
+        "target": None,
+        "current": None,            # current warning count
+        "per_rule": {},             # {code: count} current
+        "per_rule_baseline": {},
+        "iterations": [],           # [{n, start, batch:[...], edits:[...], count, delta}]
+        "iteration": 0,
+        "warnings": [],             # current outstanding warning list
+        "edits": [],                # recent applied edits (rolling)
+        "logs": [],                 # rolling log lines
+        "pr": None,
+        "commit": None,
+        "started_at": None,
+        "ended_at": None,
+        "fixed": 0,
+    }
+
+
 class EventBus:
     def __init__(self, jsonl_path: str | None = None):
         self._lock = threading.Lock()
@@ -38,30 +65,19 @@ class EventBus:
             open(jsonl_path, "w", encoding="utf-8").close()
 
         # Live snapshot the UI rebuilds itself from on (re)connect.
-        self.state: dict[str, Any] = {
-            "run_id": None,
-            "status": "idle",           # idle | running | green | escalated | error
-            "repo": None,
-            "model": None,
-            "base_branch": None,
-            "step": None,
-            "phase": None,              # prepare | baseline | fix-loop | gate | publish | done
-            "baseline": None,           # W0
-            "target": None,
-            "current": None,            # current warning count
-            "per_rule": {},             # {code: count} current
-            "per_rule_baseline": {},
-            "iterations": [],           # [{n, start, batch:[...], edits:[...], count, delta}]
-            "iteration": 0,
-            "warnings": [],             # current outstanding warning list
-            "edits": [],                # recent applied edits (rolling)
-            "logs": [],                 # rolling log lines
-            "pr": None,
-            "commit": None,
-            "started_at": None,
-            "ended_at": None,
-            "fixed": 0,
-        }
+        self.state: dict[str, Any] = _initial_state()
+
+    def reset(self, jsonl_path: str | None = None) -> None:
+        """Clear state for a new run (server drives many runs in one process)."""
+        with self._lock:
+            self._seq = 0
+            self.state = _initial_state()
+            if jsonl_path:
+                os.makedirs(os.path.dirname(jsonl_path), exist_ok=True)
+                open(jsonl_path, "w", encoding="utf-8").close()
+                self._jsonl_path = jsonl_path
+        # Tell any connected clients to wipe and rebuild.
+        self.emit("reset")
 
     # ── emit ──────────────────────────────────────────────────────────────
     def emit(self, etype: str, **data: Any) -> dict:

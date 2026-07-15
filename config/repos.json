@@ -1,0 +1,22 @@
+[
+  {
+    "key": "creativetodo",
+    "name": "CreativeTODO / server",
+    "url": "https://github.com/bilalurrahman/CreativeTODO.git",
+    "path": "C:/Users/bilal/AppData/Local/Temp/creativetodo",
+    "sln": "server/server.csproj",
+    "base_branch": "feature/CodeQA_agenticLoop",
+    "pr_base": "feature/CodeQA_agenticLoop",
+    "branch_prefix": "glm_quality"
+  },
+  {
+    "key": "hattan",
+    "name": "HattanMedicalHistory / backend",
+    "url": "https://github.com/bilalurrahman/HattanMedicalHistory.git",
+    "path": "C:/Users/bilal/AppData/Local/Temp/hattan2",
+    "sln": "backend/HattanHealthTracker.sln",
+    "base_branch": "quality",
+    "pr_base": "quality",
+    "branch_prefix": "glm_quality"
+  }
+]

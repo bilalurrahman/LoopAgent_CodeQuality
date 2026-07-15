@@ -21,7 +21,7 @@ from events import EventBus
 UI_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ui")
 
 
-def make_handler(bus: EventBus):
+def make_handler(bus: EventBus, controller=None):
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
 
@@ -38,16 +38,64 @@ def make_handler(bus: EventBus):
             self.end_headers()
             self.wfile.write(body)
 
+        def _json(self, code, obj):
+            self._send(code, json.dumps(obj).encode(), "application/json")
+
+        def _read_json(self):
+            try:
+                n = int(self.headers.get("Content-Length", 0))
+                raw = self.rfile.read(n) if n else b"{}"
+                return json.loads(raw.decode() or "{}")
+            except (ValueError, json.JSONDecodeError):
+                return {}
+
         def do_GET(self):
             path = self.path.split("?", 1)[0]
             if path in ("/", "/index.html"):
                 self._serve_file(os.path.join(UI_DIR, "index.html"), "text/html; charset=utf-8")
             elif path == "/api/state":
                 self._send(200, json.dumps(bus.snapshot()).encode(), "application/json")
+            elif path == "/api/config":
+                if controller is None:
+                    self._json(200, {"repos": [], "schedules": [], "running": False, "control": False})
+                else:
+                    snap = controller.config_snapshot()
+                    snap["control"] = True
+                    self._json(200, snap)
             elif path == "/events":
                 self._serve_sse()
             else:
                 self._send(404, b"not found")
+
+        def do_DELETE(self):
+            path = self.path.split("?", 1)[0]
+            if controller is None:
+                self._json(403, {"ok": False, "error": "control disabled"})
+                return
+            if path.startswith("/api/schedule/"):
+                sid = path.rsplit("/", 1)[-1]
+                ok = controller.delete_schedule(sid)
+                self._json(200 if ok else 404, {"ok": ok})
+            else:
+                self._json(404, {"ok": False, "error": "not found"})
+
+        def do_POST(self):
+            path = self.path.split("?", 1)[0]
+            if controller is None:
+                self._json(403, {"ok": False, "error": "control disabled (start with --daemon)"})
+                return
+            body = self._read_json()
+            if path == "/api/run":
+                ok, msg = controller.start_run(body)
+                self._json(200 if ok else 409, {"ok": ok, "run_id" if ok else "error": msg})
+            elif path == "/api/schedule":
+                s = controller.add_schedule(body)
+                self._json(200, {"ok": True, "schedule": s})
+            elif path == "/api/schedule/toggle":
+                ok = controller.toggle_schedule(body.get("id"), bool(body.get("enabled")))
+                self._json(200 if ok else 404, {"ok": ok})
+            else:
+                self._json(404, {"ok": False, "error": "not found"})
 
         def _serve_file(self, fpath, ctype):
             if not os.path.exists(fpath):
@@ -86,8 +134,8 @@ def make_handler(bus: EventBus):
     return Handler
 
 
-def start_server(bus: EventBus, host: str = "127.0.0.1", port: int = 8787) -> ThreadingHTTPServer:
-    httpd = ThreadingHTTPServer((host, port), make_handler(bus))
+def start_server(bus: EventBus, host: str = "127.0.0.1", port: int = 8787, controller=None) -> ThreadingHTTPServer:
+    httpd = ThreadingHTTPServer((host, port), make_handler(bus, controller))
     t = threading.Thread(target=httpd.serve_forever, daemon=True)
     t.start()
     return httpd

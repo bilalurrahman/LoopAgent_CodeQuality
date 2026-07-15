@@ -5,6 +5,7 @@
 #
 # The dashboard is served at http://127.0.0.1:8787
 param(
+  [switch]$Daemon,
   [switch]$Real,
   [string]$Repo = $env:REPO_PATH,
   [switch]$OpenPr,
@@ -24,7 +25,10 @@ if (-not $NoBrowser) {
   Start-Job -ScriptBlock { Start-Sleep 2; Start-Process "http://127.0.0.1:$using:Port" } | Out-Null
 }
 
-if ($Real) {
+if ($Daemon) {
+  # Control-panel mode: pick a repo in the dashboard, then Run now or Schedule.
+  python $agent "--daemon" "--port" $Port
+} elseif ($Real) {
   if (-not $Repo) { throw "In -Real mode you must pass -Repo <path> (or set REPO_PATH)." }
   $args = @("--repo", $Repo, "--step", $Step, "--model", $Model, "--port", $Port, "--keep-alive")
   if ($OpenPr) { $args += "--open-pr" }
