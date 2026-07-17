@@ -17,7 +17,9 @@ from __future__ import annotations
 import datetime
 import json
 import os
+import re
 import subprocess
+import tempfile
 import threading
 import time
 import uuid
@@ -86,15 +88,40 @@ class Controller:
     def get_repo(self, key):
         return next((r for r in self.repos if r.get("key") == key), None)
 
+    def _resolve_repo(self, params):
+        """Return a repo dict from either a saved key or an inline custom spec."""
+        cust = params.get("custom") or {}
+        if params.get("repo_key") == "custom" or cust.get("url"):
+            url = (cust.get("url") or "").strip()
+            if not url:
+                return None
+            name = url.rstrip("/").split("/")[-1].replace(".git", "") or "repo"
+            slug = re.sub(r"[^a-zA-Z0-9]+", "-", name).strip("-").lower() or "repo"
+            branch = (cust.get("branch") or "main").strip()
+            return {
+                "key": "custom",
+                "name": name,
+                "url": url,
+                "path": os.path.join(tempfile.gettempdir(), "qualityloop", slug),
+                "sln": (cust.get("sln") or "").strip(),
+                "base_branch": branch,
+                "pr_base": (cust.get("pr_base") or branch).strip(),
+                "branch_prefix": "glm_quality",
+            }
+        return self.get_repo(params.get("repo_key"))
+
     # ── run ───────────────────────────────────────────────────────────────
     def start_run(self, params: dict) -> tuple[bool, str]:
         """params: {repo_key, mode: real|simulate, open_pr, step}"""
         with self._lock:
             if self._running:
                 return False, "a run is already in progress"
-            repo = self.get_repo(params.get("repo_key"))
-            if repo is None and params.get("mode") != "simulate":
-                return False, f"unknown repo '{params.get('repo_key')}'"
+            repo = self._resolve_repo(params)
+            is_sim = params.get("mode") == "simulate"
+            if repo is None and not is_sim:
+                return False, "no repo selected (pick one or paste a custom URL)"
+            if repo is not None and not is_sim and not repo.get("sln"):
+                return False, "custom repo needs a project/solution path (e.g. server/server.csproj)"
             self._run_counter += 1
             run_id = time.strftime("%Y%m%d-%H%M%S") + f"-{self._run_counter}"
             self._running = True
@@ -163,6 +190,7 @@ class Controller:
         s = {
             "id": uuid.uuid4().hex[:8],
             "repo_key": spec.get("repo_key"),
+            "custom": spec.get("custom") or None,
             "mode": spec.get("mode", "simulate"),
             "open_pr": bool(spec.get("open_pr")),
             "step": int(spec.get("step") or 10),
@@ -234,7 +262,8 @@ class Controller:
         if self._running:
             return  # try again next tick
         ok, msg = self.start_run(
-            {"repo_key": due["repo_key"], "mode": due["mode"], "open_pr": due["open_pr"], "step": due["step"]}
+            {"repo_key": due["repo_key"], "custom": due.get("custom"), "mode": due["mode"],
+             "open_pr": due["open_pr"], "step": due["step"]}
         )
         with self._lock:
             due["last_run"] = now

@@ -253,6 +253,28 @@ select:focus,input:focus{border-color:var(--accent2)}
       </div>
       <button class="btn ghost" id="s-add">＋ Schedule</button>
     </div>
+
+    <div class="ctrls" id="custom-row" hidden style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+      <div class="field" style="flex:1;min-width:260px">
+        <label>Custom repo — Git URL</label>
+        <input type="text" id="cu-url" placeholder="https://github.com/owner/repo.git"
+          style="background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:12px;min-height:36px">
+      </div>
+      <div class="field">
+        <label>Branch</label>
+        <input type="text" id="cu-branch" value="main" style="width:150px;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:12px;min-height:36px">
+      </div>
+      <div class="field" style="flex:1;min-width:220px">
+        <label>Project / solution path</label>
+        <input type="text" id="cu-sln" placeholder="server/server.csproj"
+          style="background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:12px;min-height:36px">
+      </div>
+      <div class="field">
+        <label>PR base (opt)</label>
+        <input type="text" id="cu-prbase" placeholder="= branch" style="width:150px;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:12px;min-height:36px">
+      </div>
+    </div>
+
     <div class="sched-list" id="sched-list"></div>
   </div>
 
@@ -568,7 +590,9 @@ async function loadConfig(){
     sel.innerHTML="";
     (c.repos||[]).forEach(rp=>{const o=document.createElement("option");
       o.value=rp.key;o.textContent=rp.name+"  ("+rp.base_branch+")";sel.appendChild(o);});
+    const oc=document.createElement("option");oc.value="__custom__";oc.textContent="＋ Custom repo…";sel.appendChild(oc);
     if(prev)sel.value=prev;
+    toggleCustom();
     isRunning=!!c.running;
     updateRunBtn();
     renderSchedules(c.schedules||[],c.repos||[]);
@@ -578,7 +602,16 @@ function updateRunBtn(){
   const b=$("c-run");b.disabled=isRunning;
   b.textContent=isRunning?"● running…":"▶ Run now";
 }
-function repoName(key,repos){const r=(repos||[]).find(x=>x.key===key);return r?r.name:key;}
+function toggleCustom(){$("custom-row").hidden = $("c-repo").value!=="__custom__";}
+function customSpec(){
+  return {url:$("cu-url").value.trim(),branch:($("cu-branch").value.trim()||"main"),
+    sln:$("cu-sln").value.trim(),pr_base:$("cu-prbase").value.trim()};
+}
+function isCustom(){return $("c-repo").value==="__custom__";}
+function repoName(key,repos,sched){
+  if(key==="custom"){return (sched&&sched.custom&&sched.custom.url)?sched.custom.url.split("/").pop().replace(".git",""):"custom";}
+  const r=(repos||[]).find(x=>x.key===key);return r?r.name:key;
+}
 function renderSchedules(list,repos){
   const host=$("sched-list");
   if(!list.length){host.innerHTML="";return;}
@@ -589,7 +622,7 @@ function renderSchedules(list,repos){
     const next=s.next_run?new Date(s.next_run*1000).toLocaleString([], {hour12:false}):"—";
     const div=document.createElement("div");
     div.className="sched"+(s.enabled?"":" off");
-    div.innerHTML=`<span class="desc">${esc(repoName(s.repo_key,repos))}</span>
+    div.innerHTML=`<span class="desc">${esc(repoName(s.repo_key,repos,s))}</span>
       <span class="when">· ${esc(s.mode)}${s.open_pr?" · PR":""} · ${esc(when)} · next ${esc(next)}</span>
       <span class="sp"></span>
       <button class="tog" data-id="${s.id}" data-en="${s.enabled?0:1}">${s.enabled?"pause":"resume"}</button>
@@ -599,9 +632,19 @@ function renderSchedules(list,repos){
   host.querySelectorAll(".x").forEach(b=>b.onclick=()=>delSchedule(b.dataset.id));
   host.querySelectorAll(".tog").forEach(b=>b.onclick=()=>togSchedule(b.dataset.id,b.dataset.en==="1"));
 }
-async function runNow(){
+function baseBody(){
   const body={repo_key:$("c-repo").value,mode:$("c-mode").value,
     open_pr:$("c-pr").checked,step:parseInt($("c-step").value)||10};
+  if(isCustom()){
+    const c=customSpec();
+    if(!c.url){toast("enter a custom Git URL","err");return null;}
+    if(body.mode!=="simulate"&&!c.sln){toast("enter the project/solution path","err");return null;}
+    body.repo_key="custom";body.custom=c;
+  }
+  return body;
+}
+async function runNow(){
+  const body=baseBody();if(!body)return;
   toast("starting…");
   const r=await fetch("/api/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
   const j=await r.json();
@@ -609,10 +652,10 @@ async function runNow(){
   else toast(j.error||"failed","err");
 }
 async function addSchedule(){
-  const type=$("s-type").value;
-  const body={repo_key:$("c-repo").value,mode:$("c-mode").value,open_pr:$("c-pr").checked,
-    step:parseInt($("c-step").value)||10,type,
-    every_minutes:parseInt($("s-min").value)||60,at:$("s-at").value||"12:00"};
+  const body=baseBody();if(!body)return;
+  body.type=$("s-type").value;
+  body.every_minutes=parseInt($("s-min").value)||60;
+  body.at=$("s-at").value||"12:00";
   const r=await fetch("/api/schedule",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
   const j=await r.json();
   if(j.ok){toast("scheduled","ok");loadConfig();}else toast("failed","err");
@@ -626,6 +669,7 @@ async function togSchedule(id,en){
 }
 $("c-run").onclick=runNow;
 $("s-add").onclick=addSchedule;
+$("c-repo").onchange=toggleCustom;
 $("s-type").onchange=e=>{const d=e.target.value==="daily";
   $("s-at-wrap").hidden=!d;$("s-min-wrap").hidden=d;};
 $("c-mode").onchange=e=>{$("c-pr").parentElement.style.opacity=e.target.value==="real"?"1":".4";};
